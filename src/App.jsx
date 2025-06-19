@@ -20,19 +20,31 @@ const TodoApp = () => {
     setTodos(sampleTodos);
 
     // Check for saved theme preference or default to light mode
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      setDarkMode(savedTheme === 'dark');
-    } else {
-      // Check system preference
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setDarkMode(prefersDark);
+    try {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        setDarkMode(savedTheme === 'dark');
+      } else {
+        // Check system preference
+        if (window.matchMedia) {
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          setDarkMode(prefersDark);
+        }
+      }
+    } catch (error) {
+      // Fallback to light mode if localStorage is not available
+      setDarkMode(false);
     }
   }, []);
 
   // Save theme preference when it changes
   useEffect(() => {
-    localStorage.setItem('theme', darkMode ? 'dark' : 'light');
+    try {
+      localStorage.setItem('theme', darkMode ? 'dark' : 'light');
+    } catch (error) {
+      // Handle localStorage errors silently
+      console.warn('Unable to save theme preference:', error);
+    }
   }, [darkMode]);
 
   const addTodo = () => {
@@ -239,7 +251,7 @@ const TodoApp = () => {
 
           {/* Add Todo Input */}
           <div className={`${cardClasses} rounded-lg shadow-md p-4 mb-6 border transition-colors duration-300`}>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <input
                 type="text"
                 value={inputValue}
@@ -250,10 +262,10 @@ const TodoApp = () => {
               />
               <button
                 onClick={addTodo}
-                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center gap-2"
+                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2 sm:flex-shrink-0 w-full sm:w-auto"
               >
                 <Plus size={20} />
-                Add
+                <span className="sm:inline">Add</span>
               </button>
             </div>
           </div>
@@ -281,7 +293,7 @@ const TodoApp = () => {
                     key={todo.id}
                     className={`p-4 flex items-center gap-3 transition-colors duration-200 ${
                       darkMode 
-                        ? 'hover:bg-gray-700' + (todo.completed ? ' bg-gray-750' : '')
+                        ? 'hover:bg-gray-700' + (todo.completed ? ' bg-gray-800' : '')
                         : 'hover:bg-gray-50' + (todo.completed ? ' bg-gray-50' : '')
                     }`}
                   >
