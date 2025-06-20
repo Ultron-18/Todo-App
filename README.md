@@ -29,39 +29,32 @@ Before you begin, make sure you have the following installed:
 
 1. **Create a new React app:**
    ```bash
-   npx create-react-app todo-app
-   cd todo-app
+     npm create vite@latest todo-app -- --template react
    ```
 
 2. **Install Tailwind CSS:**
    ```bash
-   npm install -D tailwindcss postcss autoprefixer
-   npx tailwindcss init -p
+   npm install tailwindcss @tailwindcss/vite
    ```
 
-3. **Configure Tailwind CSS:**
+3. **Configure the Vite plugin:**
    
-   Replace the content of `tailwind.config.js`:
+  Add the @tailwindcss/vite plugin to your Vite configuration. `vite.config.js`:
    ```javascript
-   /** @type {import('tailwindcss').Config} */
-   module.exports = {
-     content: [
-       "./src/**/*.{js,jsx,ts,tsx}",
-     ],
-     theme: {
-       extend: {},
-     },
-     plugins: [],
-   }
+   import { defineConfig } from 'vite'
+import tailwindcss from '@tailwindcss/vite'
+export default defineConfig({
+  plugins: [
+    tailwindcss(),
+  ],
+})
    ```
 
 4. **Add Tailwind directives to your CSS:**
    
    Replace the content of `src/index.css`:
    ```css
-   @tailwind base;
-   @tailwind components;
-   @tailwind utilities;
+   @import "tailwindcss";
    ```
 
 5. **Install Lucide React for icons:**
@@ -74,7 +67,7 @@ Before you begin, make sure you have the following installed:
 
 7. **Start the development server:**
    ```bash
-   npm start
+   npm run dev
    ```
 
 The app will open in your browser at `http://localhost:3000`
